@@ -3,7 +3,6 @@
 <head>
 	<script defer>
         let theStream;
-        let mediaControl = document.getElementById("view");
         let imgSrc = false;
 
         async function startCam() {
@@ -12,15 +11,11 @@
             console.log(mediaDevices);
             try {
                 mediaStream = await navigator.mediaDevices.getUserMedia({
-                    video: {
-                    facingMode: {
-                        //Use the back camera
-                        exact: "environment",
-                    },
-                    },
+                    video: true
                 });
                 theStream = mediaStream;
-                mediaControl.srcObject = mediaStream;
+                const view =  document.getElementById("view");
+                view.srcObject = mediaStream;
             } catch (error) {
                 alert("Error: " + error);
             }
