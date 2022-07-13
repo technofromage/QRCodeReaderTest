@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<script defer>
+        let theStream;
+        let mediaControl = document.getElementById("view");
+        let imgSrc = false;
+
+        async function startCam() {
+            let mediaDevices = await navigator.mediaDevices.enumerateDevices();
+            let mediaStream;
+            console.log(mediaDevices);
+            try {
+                mediaStream = await navigator.mediaDevices.getUserMedia({
+                    video: {
+                    facingMode: {
+                        //Use the back camera
+                        exact: "environment",
+                    },
+                    },
+                });
+                theStream = mediaStream;
+                mediaControl.srcObject = mediaStream;
+            } catch (error) {
+                alert("Error: " + error);
+            }
+        }
+
+        function takePhoto() {
+            if (!("ImageCapture" in window)) {
+                alert("ImageCapture is not available");
+                return;
+            }
+
+            if (!theStream) {
+                alert("Grab the video stream first!");
+                return;
+            }
+
+            let theImageCapturer = new ImageCapture(theStream.getVideoTracks()[0]);
+
+            theImageCapturer
+                .takePhoto()
+                .then((blob) => {
+                    const i = document.getElementById("i");
+                    imgSrc = URL.createObjectURL(blob);
+                    i.src = imgSrc;
+                })
+                .catch((err) => alert("Error: " + err));
+        }
+    </script>
+</head>
+<body>
+    <button onclick="startCam();"> Get camera access </button>
+    <!-- <input type="file" accept="image/x-png,image/jpeg,image/gif" /> -->
+    <button onclick="takePhoto();">take photo </button>
+
+    <video autoplay id="view">
+        <track kind="captions" />
+    </video>
+
+    <img id="i" alt="capture" />
+</body>
+</html>
