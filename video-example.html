@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
+    <script src="QRCode-Reader.js"></script>
 	<script defer>
         let theStream;
         let imgSrc = false;
@@ -49,6 +50,14 @@
     <button onclick="startCam();"> Get camera access </button>
     <!-- <input type="file" accept="image/x-png,image/jpeg,image/gif" /> -->
     <button onclick="takePhoto();">take photo </button>
+
+    <button onclick="test();">test </button>
+
+    <button onclick="scan();">Scan </button>
+
+    <input type="hidden" name="MAX_FILE_SIZE" value="1048576" />
+    <!-- The "name" of the input field has to be "file" as it is the name of the POST parameter -->
+    Choose QR code image to read/scan: <input name="file" type="file" id = "test"/>
 
     <video autoplay id="view">
         <track kind="captions" />
