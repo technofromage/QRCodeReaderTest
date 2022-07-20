@@ -1,34 +1,39 @@
-//This code was designed to work with the video-example.html to process images to handle QR codes
-// last edited on 7/14/22
+// This code was designed to work with the video-example.html to process images to handle QR codes
+// last edited on 7/19/22
 
 import QrScanner from './qr-scanner.min.js'
 
-	//this function only exists for me to tell if the functions are loading
-function test(){
-	console.log("hello!")
-}
-
 	//this function interfaces all the HTML stuff with the tools in this library
 function processImage(){
-	const picture = document.getElementById("i");
-	let scanResult = scan(picture)
-	document.getElementById("result").textContent = scanResult
+	let paragraph = document.getElementById("result")
+	const picture = document.getElementById("i")
+	scan(picture)
+	.then(scanResult=>{
+		console.log("processedImage")
+		paragraph.textContent = scanResult
+		paragraph.style.color = "black";
+		console.log(scanResult)
+	})
+	.catch(error=>{
+		console.log("processedImage Failed")
+		paragraph.textContent = error
+		paragraph.style.color = "red";
+		console.log(error)
+	})
 }
-window.processImage = processImage
+window.processImage = processImage//this is important to let the html access the processImage
 
-	//takes a blob image/file and returns a string output for the qr code data, or an empty string if no data is read
-function scan(image){
-	QrScanner.scanImage(image, {returnDetailedScanResult: true})
-		.then(
-			result=>{//TODO: process the result to see errors that don't throw (like QR code not found)
-				console.log(result)
-				return result.data
-			}
-			)
-		.catch(
-			error => {
-				console.log(error || 'QR code error')
-				return ""
-			}
-			);
+	//This function takes the image Blob/File and will ( return a promise that ) returns either an error message, or the QR code message
+async function scan(image){
+	try{
+		const result = await QrScanner.scanImage(image, {returnDetailedScanResult: true})
+		console.log("scan successful")
+		console.log(result)
+		return result.data
+	}
+	catch(error){
+		console.log("scan not successful")
+		console.log(error || 'QR code error')
+		throw new Error(error || 'QR code error')
+	}
 }
